@@ -2,6 +2,31 @@
 
 <odoo>
     <data>
+        <template id="website_forum.header_inherit" inherit_id="website_forum.header">
+            <xpath expr="//ul[@class='nav navbar-nav']" position="replace">
+                <ul class="nav navbar-nav">
+                    <li t-att-class="sorting == 'relevancy desc' and 'active' or None ">
+                        <a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='relevancy desc') }}">Trending</a>
+                    </li>
+                    <li t-att-class="sorting == 'create_date desc' and 'active' or None ">
+                        <a t-attf-href="/forum/#{ slug(forum) }?{{ keep_query( 'search', 'post_type', 'filters', sorting='create_date desc') }}">Newest</a>
+                    </li>
+                    <!--<li t-att-class="searches.get('users') and 'active' or None ">
+                        <a t-attf-href="/forum/#{ slug(forum) }/users">People</a>
+                    </li>-->
+                    <li t-att-class="searches.get('tags') and 'active' or None ">
+                        <a t-attf-href="/forum/#{ slug(forum) }/tag">Tags</a>
+                    </li>
+                    <!--<li t-att-class="searches.get('badges') and 'active' or None ">
+                        <a t-attf-href="/forum/#{ slug(forum) }/badge">Badges</a>
+                    </li>-->
+                </ul>
+            </xpath>
+            <xpath expr="//a[class='button']" position="attributes">
+                <attributes name="t-if">uid</attributes>
+            </xpath>
+        </template>
+
         <template id="website_forum.forum_index_inherit" inherit_id="website_forum.forum_index">
             <xpath expr="//h2[@class='page-header mt0']" position="replace">
                 <!--<t t-esc="question_count"/>
