@@ -23,7 +23,7 @@
                 </ul>
             </xpath>
             <xpath expr="//a[@type='button']" position="attributes">
-                <attributes name="t-if">not is_public_user</attributes>
+                <attribute name="t-if">not is_public_user</attribute>
             </xpath>
         </template>
 
