@@ -25,6 +25,7 @@
             <xpath expr="//a[@type='button']" position="replace">
                 <t t-if="not is_public_user">New Post</t>
             </xpath>
+            <xpath expr="//div[@t-if='header.get(\'question_data\')']" position="replace"/>
         </template>
 
         <template id="website_forum.forum_index_inherit" inherit_id="website_forum.forum_index">
