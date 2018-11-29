@@ -22,19 +22,20 @@
                     </li>-->
                 </ul>
             </xpath>
-            <xpath expr="//a[@type='button']" position="attributes">
-                <attribute name="t-if">not is_public_user</attribute>
+            <xpath expr="//a[@type='button']" position="replace">
+                <t t-if="not is_public_user">New Post</t>
             </xpath>
         </template>
 
         <template id="website_forum.forum_index_inherit" inherit_id="website_forum.forum_index">
             <xpath expr="//h2[@class='page-header mt0']" position="replace">
-                <!--<t t-esc="question_count"/>
-                    <span t-if="post_type not in ('link','question','discussion')"> Posts </span>
-                    <span t-if="post_type == 'question'"> Questions</span>
+                <t t-esc="question_count"/>
+                    <span> Records </span>
+                    <!--<span t-if="post_type not in ('link','question','discussion')"> Posts </span>
+                    <span t-if="post_type == 'question'"> Question</span>
                     <span t-if="post_type == 'link'"> Links</span>
-                    <span t-if="post_type == 'discussion'"> Threads</span>
-                <t t-esc="search"/>-->
+                    <span t-if="post_type == 'discussion'"> Threads</span>-->
+                <t t-esc="search"/>
                 <small class="dropdown" t-if="filters in ('all', 'unanswered','followed', 'tag')">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <!--<t t-if="filters == 'unanswered'"> Unanswered</t>-->
@@ -81,6 +82,12 @@
                     </ul>
                 </small>
             </xpath>
+        </template>
+        <template id="website_forum.post_description_full_inherit" inherit_id="website_forum.post_description_full">
+            <xpath  expr="//ul[@class='pull-right list-inline mb0']" position="attributes">
+                <attribute name="t-if">not is_public_user</attribute>
+            </xpath>
+            <xpath expr="//div[@class='clearfix']/ul[2]/li[1]" position="replace"/>
         </template>
     </data>
 </odoo>
