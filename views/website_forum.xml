@@ -22,7 +22,7 @@
                     </li>-->
                 </ul>
             </xpath>
-            <xpath expr="//a[class='button']" position="attributes">
+            <xpath expr="//a[type='button']" position="attributes">
                 <attributes name="t-if">uid</attributes>
             </xpath>
         </template>
