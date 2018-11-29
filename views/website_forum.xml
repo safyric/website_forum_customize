@@ -3,8 +3,13 @@
 <odoo>
     <data>
         <template id="website_forum.forum_index_inherit" inherit_id="website_forum.forum_index">
-            <xpath expr="//t[@t-esc='question_count']" position="replace"/>
-            <xpath expr="//small[@class='dropdown']" position="replace">
+            <xpath expr="//h2[@class='page-header mt0']" position="replace">
+                <!--<t t-esc="question_count"/>
+                    <span t-if="post_type not in ('link','question','discussion')"> Posts </span>
+                    <span t-if="post_type == 'question'"> Questions</span>
+                    <span t-if="post_type == 'link'"> Links</span>
+                    <span t-if="post_type == 'discussion'"> Threads</span>
+                <t t-esc="search"/>-->
                 <small class="dropdown" t-if="filters in ('all', 'unanswered','followed', 'tag')">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <!--<t t-if="filters == 'unanswered'"> Unanswered</t>-->
