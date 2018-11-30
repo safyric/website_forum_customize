@@ -22,10 +22,10 @@
                     </li>-->
                 </ul>
             </xpath>
-            <xpath expr="//div[@id='right-column']/div[1]" position="attributes">
+            <xpath expr="//div[@class='col-sm-3'][@id='right-column']/div[1]" position="attributes">
                 <attribute name="t-if">user.karma>=forum.karma_moderate</attribute>
             </xpath>
-            <xpath expr="//div[@id='right-column']/div[5]" position="attributes">
+            <xpath expr="//div[@class='col-sm-3'][@id='right-column']/div[5]" position="attributes">
                 <attribute name="t-if">user.karma>=forum.karma_moderate</attribute>
             </xpath>
         </template>
