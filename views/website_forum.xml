@@ -23,7 +23,7 @@
                 </ul>
             </xpath>
             <xpath expr="//a[@type='button']" position="replace">
-                <t t-if="not is_public_user">New Post</t>
+                <t t-if="user.karma>=forum.karma_moderate"">New Post</t>
             </xpath>
             <xpath expr="//div[@id='right-column']/div[5]" position="attributes">
                 <attribute name="t-if">user.karma>=forum.karma_moderate</attribute>
