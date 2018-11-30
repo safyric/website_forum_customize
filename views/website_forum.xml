@@ -98,7 +98,7 @@
                                 <a t-attf-href="/forum/#{slug(forum)}/flagged_queue"><strong id="count_flagged_posts"><t t-esc="forum.count_flagged_posts"/></strong> post<t t-if="forum.count_flagged_posts&gt;1">s</t> flagged</a>
                             </div>
                         </div>
-                        <div t-if="header.get('question_data')" t-if="user.karma>=forum.karma_moderate">
+                        <div t-if="header.get('question_data') and user.karma>=forum.karma_moderate">
                             <div class="panel panel-default">
                                 <div class="panel-heading text-center">
                                     <h3 class="panel-title">Question tools</h3>
