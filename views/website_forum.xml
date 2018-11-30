@@ -22,11 +22,114 @@
                     </li>-->
                 </ul>
             </xpath>
-            <xpath expr="//div[@class='col-sm-3']/div[1]" position="attributes">
-                <attribute name="t-if">user.karma>=forum.karma_moderate</attribute>
-            </xpath>
-            <xpath expr="//div[@class='col-sm-3']/div[5]" position="attributes">
-                <attribute name="t-if">user.karma>=forum.karma_moderate</attribute>
+            <xpath expr="//div[@id='wrap']" position="replace">
+                <div class="row mb16">
+                    <div class="col-sm-9">
+                        <div t-foreach="notifications or []" t-as="notification" class="alert alert-success alert-dismissable">
+                            <button type="button" class="close notification_close" t-att-id="notification.id" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
+                            <div t-field="notification.body"/>
+                            <a t-attf-href="/forum/#{ slug(forum) }/user/#{ user.id }#badges" class="fa fa-arrow-right">View Your Badges</a>
+                        </div>
+                        <div t-if="not validation_email_sent and not is_public_user and user.karma == 0" class="alert alert-danger alert-dismissable">
+                            <button type="button" class="close validation_email_close" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
+                            <div>
+                                <p>
+                                    It appears your email has not been verified.
+                                    <a class="send_validation_email" href="#" t-att-forum-id="forum.id">Click here to send a verification email allowing you to participate to the forum.</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div t-if="validation_email_done" class="alert alert-success alert-dismissable">
+                            <button type="button" class="close validated_email_close" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
+                            <div>
+                                <p>Congratulations! Your email has just been validated. You may now participate to our forums.</p>
+                            </div>
+                        </div>
+                        <t t-raw="0"/>
+                    </div>
+                    <div class="col-sm-3" id="right-column">
+                        <div t-if="not header.get('ask_hide') and user.karma>=forum.karma_moderate" t-attf-class="btn-group btn-block mb16 #{(user.karma &lt; forum.karma_ask) and not is_public_user and 'karma_required' or ''}" t-attf-data-karma="#{forum.karma_ask}">
+                            <t t-set="multi_type" t-value="(forum.allow_link and forum.allow_question) or (forum.allow_link and forum.allow_discussion) or (forum.allow_question and forum.allow_discussion)"/>
+                            <a type="button"  t-attf-class="btn btn-primary btn-lg #{'col-sm-10' if multi_type else 'col-sm-12'}" t-attf-href="/forum/#{slug(forum)}/ask?post_type=#{forum.default_post_type}">
+                                <t t-if="forum.default_post_type == 'question'">Ask a Question</t>
+                                <t t-if="forum.default_post_type == 'link'">Submit a Link</t>
+                                <t t-if="forum.default_post_type == 'discussion'">New Discussion</t>
+                            </a>
+                            <t t-if="multi_type">
+                                <button type="button" class="btn btn-primary btn-lg col-sm-2 dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Select Post</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li t-if="forum.allow_question"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=question">Ask a Question</a></li>
+                                    <li t-if="forum.allow_link"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=link">Submit a Link</a></li>
+                                    <li t-if="forum.allow_discussion"><a t-attf-href="/forum/#{slug(forum)}/ask?post_type=discussion">New Discussion</a></li>
+                                </ul>
+                            </t>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Keep Informed</h3>
+                            </div>
+                            <div class="panel-body">
+                                <t t-call="website_mail.follow">
+                                    <t t-set="email" t-value="user.email"/>
+                                    <t t-set="object" t-value="forum"/>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="panel panel-default" id="about_forum">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">About This Community</h3>
+                            </div>
+                            <div class="panel-body">
+                                <span t-field="forum.description"/>
+                                <a t-if="not header.get('is_guidelines')" t-attf-href="/forum/#{slug(forum)}/faq" class="fa fa-arrow-right"> Read Guidelines</a>
+                                <a t-if="header.get('is_guidelines')" t-attf-href="/forum/#{slug(forum)}" class="fa fa-arrow-right"> Back to <span t-field="forum.name"/></a>
+                            </div>
+                        </div>
+                        <div class="panel panel-default" id="moderation_tools" t-if="user.karma>=forum.karma_moderate">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Moderation Tools</h3>
+                            </div>
+                            <div class="panel-body text-center">
+                                <a t-attf-href="/forum/#{slug(forum)}/validation_queue"><strong><t t-esc="forum.count_posts_waiting_validation"/></strong> waiting for validation</a>
+                                <hr style="margin-top:4px;margin-bottom:0;padding-bottom:4px;" />
+                                <a t-attf-href="/forum/#{slug(forum)}/flagged_queue"><strong id="count_flagged_posts"><t t-esc="forum.count_flagged_posts"/></strong> post<t t-if="forum.count_flagged_posts&gt;1">s</t> flagged</a>
+                            </div>
+                        </div>
+                        <div t-if="header.get('question_data')" t-if="user.karma>=forum.karma_moderate">
+                            <div class="panel panel-default">
+                                <div class="panel-heading text-center">
+                                    <h3 class="panel-title">Question tools</h3>
+                                </div>
+                                <div class="panel-body text-center">
+                                    <t t-call="website_mail.follow"><t t-set="object" t-value="question"/></t>
+                                    <div class="mt8">
+                                        <strong><t t-raw="len(question.message_follower_ids)"/></strong> follower(s)
+                                    </div>
+                            </div>
+                                <div class="panel-heading text-center">
+                                    <h3 class="panel-title ">Stats</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table">
+                                        <thead><tr><td> Asked: <strong><span t-field="question.create_date" t-options='{"format":"short"}'/></strong></td></tr></thead>
+                                        <tr>
+                                            <td> Seen: <strong><t t-raw="question.views"/></strong>
+                                                <span t-if="question.views&gt;1"> times</span>
+                                                <span t-if="question.views&lt;=1"> time</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> Last updated: <strong><span t-field="question.write_date" t-options='{"format":"short"}'/></strong></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </xpath>
         </template>
 
